@@ -22,8 +22,8 @@ jobs:
   - script: git fetch github
     displayName: 'Fetch changes from GitHub'
 
-  - script: git push origin $(Build.SourceBranchName)
-    displayName: 'Sync changes to GitHub'
+  - script: git push github HEAD:$(Build.SourceBranchName)
+  displayName: 'Sync changes to GitHub'
 
   - script: git pull github $(Build.SourceBranchName)
     displayName: 'Sync changes from GitHub'
