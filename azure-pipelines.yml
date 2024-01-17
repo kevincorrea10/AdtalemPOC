@@ -1,19 +1,34 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- master
+- '*'
 
-pool:
-  vmImage: ubuntu-latest
+pr:
+- '*'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+- job: SyncBranches
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - script: echo "Starting branch synchronization"
+    displayName: 'Start Message'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - checkout: self
+    persistCredentials: true
+    clean: true
+
+  - script: git remote add github https://github.com/kevincorrea10/AdtalemPOC.git
+    displayName: 'Add GitHub remote'
+
+  - script: git fetch github
+    displayName: 'Fetch changes from GitHub'
+
+  - script: git push origin $(Build.SourceBranchName)
+    displayName: 'Sync changes to GitHub'
+
+  - script: git pull github $(Build.SourceBranchName)
+    displayName: 'Sync changes from GitHub'
+
+  # Add additional tasks here based on your needs
+
+  - script: echo "Additional tasks..."
+    displayName: 'Additional Tasks'
